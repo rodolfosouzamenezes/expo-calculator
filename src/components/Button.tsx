@@ -14,7 +14,7 @@ export function Button({ text, type }: IButtonProps) {
         return (
           <Circle bg={type === 'equal' ? (isPressed ? 'primary.800' : 'primary.900') : (isPressed ? 'background.600' : 'background.800')} size={20} _text={{
             color: type === 'operator' ? 'primary.800' : type === 'clear' ? 'error.400' : 'text.900',
-            fontSize: 34,
+            fontSize: 28,
             style: {
               transform: [{
                 scale: isPressed ? 0.75 : 1,
