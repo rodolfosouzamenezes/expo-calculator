@@ -1,20 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NativeBaseProvider, StatusBar } from 'native-base';
+import { useColorScheme } from 'react-native';
+import { Calculator } from './src/screens/Calculator';
+import themes from './styles/themes';
 
 export default function App() {
+  const deviceTheme = useColorScheme();
+  const theme = deviceTheme === 'light' ? themes.light.theme : themes.dark.theme;
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NativeBaseProvider theme={theme}>
+      <StatusBar
+        barStyle='light-content'
+        backgroundColor='transparent'
+        translucent
+      />
+
+      <Calculator />
+    </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
