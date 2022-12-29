@@ -1,6 +1,5 @@
 import { extendTheme } from 'native-base';
 import globalTheme from './global';
-console.log(globalTheme)
 
 const theme = extendTheme({
   ...globalTheme,
