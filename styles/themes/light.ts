@@ -3,11 +3,11 @@ import globalTheme from './global';
 
 const theme = extendTheme({
   ...globalTheme,
-  primary: {
-    800: '#56a405',
-    900: '#427e04',
-  },
   colors: {
+    primary: {
+      800: '#56a405',
+      900: '#427e04',
+    },
     background: {
       600: '#c7c7c7',
       800: '#f8f8f8',
