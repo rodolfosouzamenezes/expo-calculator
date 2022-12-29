@@ -1,9 +1,10 @@
 import { HStack, VStack } from "native-base";
 import { Button } from "./Button";
 
-export type Operations = number | 'C' | '%' | '/' | '*' | '-' | '+' | '⌫' | '=' | '.' | '(';
+export type Operation = '%' | '/' | '*' | '-' | '+' | '=';
+export type Keys = number | Operation | 'C' | '⌫' | '.' | '(';
 export interface IKeyboardProps {
-  handleButtonPress: (value: Operations) => void;
+  handleButtonPress: (value: Keys) => void;
 }
 
 export function Keyboard({ handleButtonPress }: IKeyboardProps) {
