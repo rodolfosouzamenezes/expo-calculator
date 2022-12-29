@@ -1,11 +1,11 @@
-import { Text, VStack } from "native-base";
+import { VStack } from "native-base";
+import { Display } from "../components/Display";
 import { Keyboard } from "../components/Keyboard";
 
 export function Calculator() {
   return (
     <VStack flex={1} bg='background.900' alignItems='center' safeArea>
-      <Text color='text.900' fontSize={12}>OOOOOOOOOOS</Text>
-
+      <Display operation="10+5" result={15} />
       <Keyboard />
     </VStack>
   )

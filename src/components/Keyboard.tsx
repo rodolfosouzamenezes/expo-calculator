@@ -3,7 +3,7 @@ import { Button } from "./Button";
 
 export function Keyboard() {
   return (
-    <VStack position='absolute' bottom={0} pt={4} borderTopColor='background.800' borderTopWidth={2}>
+    <VStack pt={4} borderTopColor='background.800' borderTopWidth={2}>
       <HStack justifyContent='space-evenly' w='full' mb={4}>
         <Button type='clear' text='C' />
         <Button type='operator' text='%' />
