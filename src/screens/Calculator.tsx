@@ -25,6 +25,8 @@ export function Calculator() {
     let parenthesesAreClosed = confirmParenthesesAreClosed()
     setIsSolvable(parenthesesAreClosed)
 
+    if(value === 'C') return setExpression('')
+    if(value === '⌫') return setExpression(expression.slice(0, -1))
 
     if (value === '=' && !isSolvable) {
       if (!parenthesesAreClosed && lastCharacterOfExpression !== '') {
