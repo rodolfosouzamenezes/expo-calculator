@@ -51,7 +51,7 @@ export function Calculator() {
       return setExpression(expression.concat('*', number))
     }
     setLastCharacterOfExpression(number)
-    !parenthesesAreClosed && setIsSolvable(false)
+    parenthesesAreClosed && setIsSolvable(true)
   }
 
   const handleParenthesesPressed = () => {
@@ -83,6 +83,30 @@ export function Calculator() {
     setExpression(expression.concat('('))
   }
 
+  const handleEqualPressed = () => {
+    if (!isSolvable) {
+      if (!parenthesesAreClosed) {
+        return toast.show({
+          title: 'Expressão inválida, há um parêntese aberto',
+          placement: 'top',
+          bgColor: 'red.500'
+        })
+      }
+
+      return toast.show({
+        title: 'Expressão inválida',
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+    }
+
+    setLastCharacterOfExpression('C');
+    setExpression([eval(expression.join(''))]);
+    setResult('');
+    setParenthesesAreClosed(true);
+    setIsSolvable(false);
+  }
+
   const handleButtonPress = (value: Keys) => {
     typeof value !== 'number' && !parenthesesAreClosed && setIsSolvable(false)
 
@@ -98,6 +122,9 @@ export function Calculator() {
         countParentheses()
         handleParenthesesPressed()
         break;
+      case '=':
+        handleEqualPressed()
+        break;
       default:
         setLastCharacterOfExpression(value)
         setIsSolvable(false)
@@ -106,39 +133,7 @@ export function Calculator() {
         break;
     }
 
-    console.log(lastCharacterOfExpression);
-
-
-    // if (value === '=' && !isSolvable) {
-    //   if (!parenthesesAreClosed && lastCharacterOfExpression !== '') {
-    //     return toast.show({
-    //       title: 'Expressão inválida, há um parêntese aberto',
-    //       placement: 'top',
-    //       bgColor: 'red.500'
-    //     })
-    //   }
-
-    //   return toast.show({
-    //     title: 'Expressão inválida',
-    //     placement: 'top',
-    //     bgColor: 'red.500'
-    //   })
-    // }
-
-    // if (value === '=') return setResult(eval(expression))
-
-    // if (value === '(' && !parenthesesAreClosed && (lastCharacterOfExpression !== '(') && (lastCharacterOfExpression !== '')) {
-    //   setIsSolvable(true)
-
-    //   return setExpression(expression + ')')
-    // }
-
-    // if (lastCharacterOfExpression === ')') {
-    //   return setExpression(expression + '*' + value)
-    // }
-
-    // return setExpression(expression + value)
-
+    console.log(lastCharacterOfExpression);    
   }
 
 
