@@ -100,8 +100,11 @@ export function Calculator() {
       })
     }
 
+    let stringExpressionResult = String(eval(expression.join('')));
+    let arrayResult = Array.from(stringExpressionResult, Number)
+    
+    arrayResult[0] === 0 ? setExpression([]) : setExpression(arrayResult);
     setLastCharacterOfExpression('C');
-    setExpression([eval(expression.join(''))]);
     setResult('');
     setParenthesesAreClosed(true);
     setIsSolvable(false);
