@@ -8,7 +8,10 @@ export interface IDisplayProps {
 
 export function Display({ expression, result }: IDisplayProps) {
   const formatExpression = (unformattedExpression: Keys[]) => {
-    let formattedExpression = unformattedExpression.join('').replace(/\*/g, "x").replace(/\//g, "÷");
+    let formattedExpression = unformattedExpression.join('')
+    .replace(/\*/g, "x")
+    .replace(/\//g, "÷")
+    .replace(/\./g, ",");
 
     return formattedExpression;
   };
