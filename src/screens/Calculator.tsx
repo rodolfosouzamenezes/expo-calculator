@@ -4,27 +4,33 @@ import { Display } from "../components/Display";
 import { Keyboard, Keys, Operation } from "../components/Keyboard";
 
 export function Calculator() {
-  const [isSolvable, setIsSolvable] = useState(false);
-  const [expression, setExpression] = useState<Keys[]>([]);
   const [lastCharacterOfExpression, setLastCharacterOfExpression] = useState<Keys>('C');
+  const [expression, setExpression] = useState<Keys[]>([]);
   const [result, setResult] = useState<string>('');
+  const [parenthesesAreClosed, setParenthesesAreClosed] = useState(true);
+  const [isSolvable, setIsSolvable] = useState(false);
 
   const toast = useToast();
 
-  const confirmParenthesesAreClosed = (): boolean => {
+  const countParentheses = () => {
     if (expression) {
       let countOpenParentheses = expression.join('').split('(').length - 1;
       let countCloseParentheses = expression.join('').split(')').length - 1;
 
-      return countOpenParentheses === countCloseParentheses ? true : false;
-    }
+      countOpenParentheses === countCloseParentheses ? setParenthesesAreClosed(true) : setParenthesesAreClosed(false);
 
-    return false;
+      return {
+        countOpenParentheses,
+        countCloseParentheses,
+      };
+    }
   }
 
   const clearAll = () => {
-    setResult('');
+    setLastCharacterOfExpression('C');
     setExpression([]);
+    setResult('');
+    setParenthesesAreClosed(true);
     setIsSolvable(false);
   };
 
@@ -41,8 +47,6 @@ export function Calculator() {
   }
 
   const handleNumberPressed = (number: number) => {
-    let parenthesesAreClosed = confirmParenthesesAreClosed()
-
     if (lastCharacterOfExpression === ')') {
       return setExpression(expression.concat('*', number))
     }
@@ -51,8 +55,6 @@ export function Calculator() {
   }
 
   const handleParenthesesPressed = () => {
-    let parenthesesAreClosed = confirmParenthesesAreClosed()
-
     if (!parenthesesAreClosed && (lastCharacterOfExpression !== '(') && (lastCharacterOfExpression !== 'C')) {
       if (lastCharacterOfExpression !== ')' && typeof lastCharacterOfExpression !== 'number') {
         return toast.show({
@@ -82,10 +84,6 @@ export function Calculator() {
   }
 
   const handleButtonPress = (value: Keys) => {
-    let parenthesesAreClosed = confirmParenthesesAreClosed()
-    // let lastCharacterOfExpression = expression.at(-1);
-    // setIsSolvable(parenthesesAreClosed)
-
     typeof value !== 'number' && !parenthesesAreClosed && setIsSolvable(false)
 
     switch (value) {
@@ -94,8 +92,10 @@ export function Calculator() {
         break;
       case "⌫":
         eraseToTheLeft();
+        countParentheses()
         break;
       case '(':
+        countParentheses()
         handleParenthesesPressed()
         break;
       default:
@@ -143,8 +143,6 @@ export function Calculator() {
 
 
   useEffect(() => {
-    let parenthesesAreClosed = confirmParenthesesAreClosed()
-
     parenthesesAreClosed && isSolvable && setResult(eval(expression.join('')))
     !isSolvable && setResult('')
   })
