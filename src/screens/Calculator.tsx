@@ -12,7 +12,7 @@ export function Calculator() {
 
   const toast = useToast();
 
-  const countParentheses = () => {
+  const countParentheses = (): { countOpenParentheses: number, countCloseParentheses: number } => {
     if (expression) {
       let countOpenParentheses = expression.join('').split('(').length - 1;
       let countCloseParentheses = expression.join('').split(')').length - 1;
@@ -24,6 +24,11 @@ export function Calculator() {
         countCloseParentheses,
       };
     }
+
+    return {
+      countOpenParentheses: 0,
+      countCloseParentheses: 0,
+    };
   }
 
   const clearAll = () => {
@@ -40,9 +45,10 @@ export function Calculator() {
 
       if (expression.length === 1) setLastCharacterOfExpression('C')
 
+      
+      expression[expression.length - 1] === ')' && setParenthesesAreClosed(false)
+      typeof expression[expression.length - 2] === 'number' && expression[expression.length - 1] === ')' ? setIsSolvable(true) : setIsSolvable(false)
       setExpression(expression.slice(0, -1));
-
-      typeof expression[expression.length - 2] === 'number' && setIsSolvable(true)
     }
   }
 
@@ -50,7 +56,6 @@ export function Calculator() {
     if (lastCharacterOfExpression === ')') {
       return setExpression(expression.concat('*', number))
     }
-    setLastCharacterOfExpression(number)
     parenthesesAreClosed && setIsSolvable(true)
   }
 
@@ -66,8 +71,11 @@ export function Calculator() {
 
       setIsSolvable(true)
       setLastCharacterOfExpression(')')
+      const { countCloseParentheses, countOpenParentheses } = countParentheses();
+      countOpenParentheses - countCloseParentheses === 1 && setParenthesesAreClosed(true)
 
-      return setExpression(expression.concat(')'))
+      setExpression(expression.concat(')'))
+      return
     }
 
     if (lastCharacterOfExpression === ')' || typeof lastCharacterOfExpression === 'number') {
@@ -102,7 +110,7 @@ export function Calculator() {
 
     let stringExpressionResult = String(eval(expression.join('')));
     let arrayResult = Array.from(stringExpressionResult, Number)
-    
+
     arrayResult[0] === 0 ? setExpression([]) : setExpression(arrayResult);
     setLastCharacterOfExpression('C');
     setResult('');
@@ -112,6 +120,7 @@ export function Calculator() {
 
   const handleButtonPress = (value: Keys) => {
     typeof value !== 'number' && !parenthesesAreClosed && setIsSolvable(false)
+    countParentheses()
 
     switch (value) {
       case "C":
@@ -122,7 +131,6 @@ export function Calculator() {
         countParentheses()
         break;
       case '(':
-        countParentheses()
         handleParenthesesPressed()
         break;
       case '=':
@@ -136,7 +144,8 @@ export function Calculator() {
         break;
     }
 
-    console.log(lastCharacterOfExpression);    
+    countParentheses()
+    console.log(lastCharacterOfExpression);
   }
 
 
