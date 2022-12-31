@@ -2,7 +2,7 @@ import { HStack, VStack } from "native-base";
 import { Button } from "./Button";
 
 export type Operation = '%' | '/' | '*' | '-' | '+' | '=';
-export type Keys = number | Operation | 'C' | '⌫' | '.' | '(';
+export type Keys = number | Operation | 'C' | '⌫' | '.' | '(' | ')';
 export interface IKeyboardProps {
   handleButtonPress: (value: Keys) => void;
 }

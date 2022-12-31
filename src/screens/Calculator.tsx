@@ -1,18 +1,20 @@
 import { useToast, VStack } from "native-base";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Display } from "../components/Display";
-import { Keyboard, Operations } from "../components/Keyboard";
+import { Keyboard, Keys, Operation } from "../components/Keyboard";
 
 export function Calculator() {
   const [isSolvable, setIsSolvable] = useState(false);
-  const [expression, setExpression] = useState<string>('');
+  const [expression, setExpression] = useState<Keys[]>([]);
+  const [lastCharacterOfExpression, setLastCharacterOfExpression] = useState<Keys>('C');
+  const [result, setResult] = useState<string>('');
 
   const toast = useToast();
 
   const confirmParenthesesAreClosed = (): boolean => {
     if (expression) {
-      let countOpenParentheses = expression.split('(').length - 1;
-      let countCloseParentheses = expression.split(')').length - 1;
+      let countOpenParentheses = expression.join('').split('(').length - 1;
+      let countCloseParentheses = expression.join('').split(')').length - 1;
 
       return countOpenParentheses === countCloseParentheses ? true : false;
     }
@@ -20,45 +22,136 @@ export function Calculator() {
     return false;
   }
 
-  const handleButtonPress = (value: Operations) => {
-    let lastCharacterOfExpression = expression.substring(expression.length - 1); 
+  const clearAll = () => {
+    setResult('');
+    setExpression([]);
+    setIsSolvable(false);
+  };
+
+  const eraseToTheLeft = () => {
+    if (expression.length !== 0) {
+      expression.length > 2 && setLastCharacterOfExpression(expression[expression.length - 2])
+
+      if (expression.length === 1) setLastCharacterOfExpression('C')
+
+      setExpression(expression.slice(0, -1));
+
+      typeof expression[expression.length - 2] === 'number' && setIsSolvable(true)
+    }
+  }
+
+  const handleNumberPressed = (number: number) => {
     let parenthesesAreClosed = confirmParenthesesAreClosed()
-    setIsSolvable(parenthesesAreClosed)
 
-    if(value === 'C') return setExpression('')
-    if(value === '⌫') return setExpression(expression.slice(0, -1))
+    if (lastCharacterOfExpression === ')') {
+      return setExpression(expression.concat('*', number))
+    }
+    setLastCharacterOfExpression(number)
+    !parenthesesAreClosed && setIsSolvable(false)
+  }
 
-    if (value === '=' && !isSolvable) {
-      if (!parenthesesAreClosed && lastCharacterOfExpression !== '') {
+  const handleParenthesesPressed = () => {
+    let parenthesesAreClosed = confirmParenthesesAreClosed()
+
+    if (!parenthesesAreClosed && (lastCharacterOfExpression !== '(') && (lastCharacterOfExpression !== 'C')) {
+      if (lastCharacterOfExpression !== ')' && typeof lastCharacterOfExpression !== 'number') {
         return toast.show({
-          title: 'Expressão inválida, há um parêntese aberto',
+          title: 'Expressão inválida',
           placement: 'top',
           bgColor: 'red.500'
         })
       }
 
-      return toast.show({
-        title: 'Expressão inválida',
-        placement: 'top',
-        bgColor: 'red.500'
-      })
+      setIsSolvable(true)
+      setLastCharacterOfExpression(')')
+
+      return setExpression(expression.concat(')'))
     }
 
-    if (value === '(' && !parenthesesAreClosed && (lastCharacterOfExpression !== '(') && (lastCharacterOfExpression !== '')) {
+    if (lastCharacterOfExpression === ')' || typeof lastCharacterOfExpression === 'number') {
+      setIsSolvable(false)
 
-      return setExpression(expression + ')')
+      setLastCharacterOfExpression('(')
+
+      return setExpression(expression.concat('*', '('))
     }
 
-    if (lastCharacterOfExpression === ')') {
-      return setExpression(expression + '*' + value)
-    }
-
-    return setExpression(expression + value)
+    setIsSolvable(false)
+    setLastCharacterOfExpression('(')
+    setExpression(expression.concat('('))
   }
+
+  const handleButtonPress = (value: Keys) => {
+    let parenthesesAreClosed = confirmParenthesesAreClosed()
+    // let lastCharacterOfExpression = expression.at(-1);
+    // setIsSolvable(parenthesesAreClosed)
+
+    typeof value !== 'number' && !parenthesesAreClosed && setIsSolvable(false)
+
+    switch (value) {
+      case "C":
+        clearAll();
+        break;
+      case "⌫":
+        eraseToTheLeft();
+        break;
+      case '(':
+        handleParenthesesPressed()
+        break;
+      default:
+        setLastCharacterOfExpression(value)
+        setIsSolvable(false)
+        setExpression(expression.concat(value))
+        if (typeof value === 'number') handleNumberPressed(value)
+        break;
+    }
+
+    console.log(lastCharacterOfExpression);
+
+
+    // if (value === '=' && !isSolvable) {
+    //   if (!parenthesesAreClosed && lastCharacterOfExpression !== '') {
+    //     return toast.show({
+    //       title: 'Expressão inválida, há um parêntese aberto',
+    //       placement: 'top',
+    //       bgColor: 'red.500'
+    //     })
+    //   }
+
+    //   return toast.show({
+    //     title: 'Expressão inválida',
+    //     placement: 'top',
+    //     bgColor: 'red.500'
+    //   })
+    // }
+
+    // if (value === '=') return setResult(eval(expression))
+
+    // if (value === '(' && !parenthesesAreClosed && (lastCharacterOfExpression !== '(') && (lastCharacterOfExpression !== '')) {
+    //   setIsSolvable(true)
+
+    //   return setExpression(expression + ')')
+    // }
+
+    // if (lastCharacterOfExpression === ')') {
+    //   return setExpression(expression + '*' + value)
+    // }
+
+    // return setExpression(expression + value)
+
+  }
+
+
+  useEffect(() => {
+    let parenthesesAreClosed = confirmParenthesesAreClosed()
+
+    parenthesesAreClosed && isSolvable && setResult(eval(expression.join('')))
+    !isSolvable && setResult('')
+  })
 
   return (
     <VStack flex={1} bg='background.900' alignItems='center' safeArea>
-      <Display expression={expression} result={15} />
+      <Display expression={expression} result={result} />
       <Keyboard handleButtonPress={handleButtonPress} />
     </VStack>
   )

@@ -1,13 +1,14 @@
 import { Box, Text } from "native-base";
+import { Keys } from "./Keyboard";
 
 export interface IDisplayProps {
-  expression : string;
+  expression : Keys[];
   result: string;
 }
 
 export function Display({ expression, result }: IDisplayProps) {
-  const formatExpression = (unformattedExpression: string) => {
-    let formattedExpression = unformattedExpression.replace(/\*/g, "x").replace(/\//g, "÷");
+  const formatExpression = (unformattedExpression: Keys[]) => {
+    let formattedExpression = unformattedExpression.join('').replace(/\*/g, "x").replace(/\//g, "÷");
 
     return formattedExpression;
   };
