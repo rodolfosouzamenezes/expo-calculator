@@ -1,7 +1,7 @@
 import { useToast, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { Display } from "../components/Display";
-import { Keyboard, Keys, Operation } from "../components/Keyboard";
+import { Keyboard, Keys } from "../components/Keyboard";
 
 export function Calculator() {
   const [lastCharacterOfExpression, setLastCharacterOfExpression] = useState<Keys>('C');
@@ -12,7 +12,7 @@ export function Calculator() {
 
   const toast = useToast();
 
-  const countParentheses = (): { countOpenParentheses: number, countCloseParentheses: number } => {
+  const countParentheses = () => {
     if (expression) {
       let countOpenParentheses = expression.join('').split('(').length - 1;
       let countCloseParentheses = expression.join('').split(')').length - 1;
@@ -56,7 +56,7 @@ export function Calculator() {
     if (lastCharacterOfExpression === ')') {
       return setExpression(expression.concat('*', number))
     }
-    parenthesesAreClosed && setIsSolvable(true)
+    setIsSolvable(true)
   }
 
   const handleParenthesesPressed = () => {
@@ -152,6 +152,9 @@ export function Calculator() {
 
 
   useEffect(() => {
+    countParentheses()
+    console.log('Parentheses:', parenthesesAreClosed, 'Is Solvable:', isSolvable);
+    
     parenthesesAreClosed && isSolvable && setResult(eval(expression.join('')))
     !isSolvable && setResult('')
   })
