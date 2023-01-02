@@ -1,7 +1,7 @@
 import { useToast, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { Display } from "../components/Display";
-import { Keyboard, Keys } from "../components/Keyboard";
+import { Keyboard, Keys, KeysThatAreNotNumbersSet } from "../components/Keyboard";
 
 export function Calculator() {
   const [lastCharacterOfExpression, setLastCharacterOfExpression] = useState<Keys>('C');
@@ -30,6 +30,18 @@ export function Calculator() {
       countCloseParentheses: 0,
     };
   }
+
+  const verifyItIsSolvable = () => {
+    countParentheses();
+
+    if (!parenthesesAreClosed ||
+      typeof lastCharacterOfExpression !== 'number' &&
+      KeysThatAreNotNumbersSet.has(lastCharacterOfExpression)
+    ) {
+      return setIsSolvable(false)
+    }
+    return setIsSolvable(true)
+  };
 
   const clearAll = () => {
     setLastCharacterOfExpression('C');
