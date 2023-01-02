@@ -3,6 +3,8 @@ import { Button } from "./Button";
 
 export type Operation = '%' | '/' | '*' | '-' | '+' | '=';
 export type Keys = number | Operation | 'C' | '⌫' | '.' | '(' | ')';
+export const OperationsSet = new Set(['%', '/', '*', '-', '+', '='])
+export const KeysThatAreNotNumbersSet = new Set([...OperationsSet, 'C', '⌫', '.', '(', ')'])
 export interface IKeyboardProps {
   handleButtonPress: (value: Keys) => void;
 }
