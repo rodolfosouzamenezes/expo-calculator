@@ -1,7 +1,7 @@
 import { useToast, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { Display } from "../components/Display";
-import { Keyboard, Keys, KeysThatAreNotNumbersSet } from "../components/Keyboard";
+import { Keyboard, Keys, KeysThatAreNotNumbersSet, Operation, OperationsSet } from "../components/Keyboard";
 
 export function Calculator() {
   const [lastCharacterOfExpression, setLastCharacterOfExpression] = useState<Keys>('C');
@@ -43,7 +43,7 @@ export function Calculator() {
     return setIsSolvable(true)
   };
 
-  const clearAll = () => {
+  const handleClear = () => {
     setLastCharacterOfExpression('C');
     setExpression([]);
     setResult('');
@@ -51,27 +51,20 @@ export function Calculator() {
     setIsSolvable(false);
   };
 
-  const eraseToTheLeft = () => {
+  const handleEraseToTheLeft = () => {
     if (expression.length !== 0) {
       expression.length > 2 && setLastCharacterOfExpression(expression[expression.length - 2])
 
       if (expression.length === 1) setLastCharacterOfExpression('C')
 
-      
+
       expression[expression.length - 1] === ')' && setParenthesesAreClosed(false)
       typeof expression[expression.length - 2] === 'number' && expression[expression.length - 1] === ')' ? setIsSolvable(true) : setIsSolvable(false)
       setExpression(expression.slice(0, -1));
     }
   }
 
-  const handleNumberPressed = (number: number) => {
-    if (lastCharacterOfExpression === ')') {
-      return setExpression(expression.concat('*', number))
-    }
-    setIsSolvable(true)
-  }
-
-  const handleParenthesesPressed = () => {
+  const handleParentheses = () => {
     if (!parenthesesAreClosed && (lastCharacterOfExpression !== '(') && (lastCharacterOfExpression !== 'C')) {
       if (lastCharacterOfExpression !== ')' && typeof lastCharacterOfExpression !== 'number') {
         return toast.show({
@@ -103,7 +96,7 @@ export function Calculator() {
     setExpression(expression.concat('('))
   }
 
-  const handleEqualPressed = () => {
+  const handleEqual = () => {
     if (!isSolvable) {
       if (!parenthesesAreClosed) {
         return toast.show({
@@ -132,43 +125,56 @@ export function Calculator() {
     setIsSolvable(false);
   }
 
-  const handleButtonPress = (value: Keys) => {
-    typeof value !== 'number' && !parenthesesAreClosed && setIsSolvable(false)
-    countParentheses()
+  const handlePoint = () => {
 
+  }
+
+  const handleNumber = (number: number) => {
+    if (lastCharacterOfExpression === ')') {
+      return setExpression(expression.concat('*', number))
+    }
+    setIsSolvable(true)
+  }
+
+  const handleOperation = (operation: Operation) => {
+
+  }
+
+  const handleButtonPress = (value: Keys) => {
     switch (value) {
       case "C":
-        clearAll();
+        handleClear();
         break;
       case "⌫":
-        eraseToTheLeft();
-        countParentheses()
-        break;
-      case '(':
-        handleParenthesesPressed()
+        handleEraseToTheLeft();
         break;
       case '=':
-        handleEqualPressed()
+        handleEqual()
+        break;
+      case '(':
+        handleParentheses()
+        break;
+      case ')':
+        handleParentheses()
+        break;
+      case '.':
+        handlePoint()
         break;
       default:
-        setLastCharacterOfExpression(value)
-        setIsSolvable(false)
-        setExpression(expression.concat(value))
-        if (typeof value === 'number') handleNumberPressed(value)
+        if (typeof value === 'number') handleNumber(value)
+        if (typeof value !== 'number' && OperationsSet.has(value)) handleOperation(value)
         break;
     }
 
-    countParentheses()
-    console.log(lastCharacterOfExpression);
+    console.log('Last Character of Expression:', lastCharacterOfExpression);
   }
 
 
   useEffect(() => {
-    countParentheses()
+    verifyItIsSolvable()
     console.log('Parentheses:', parenthesesAreClosed, 'Is Solvable:', isSolvable);
-    
-    parenthesesAreClosed && isSolvable && setResult(eval(expression.join('')))
-    !isSolvable && setResult('')
+
+    setResult(isSolvable ? eval(expression.join('')) : '')
   })
 
   return (
