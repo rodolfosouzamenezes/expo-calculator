@@ -4,11 +4,11 @@ import { Display } from "../components/Display";
 import { Keyboard, Keys, KeysThatAreNotNumbersSet, Operation, OperationsSet } from "../components/Keyboard";
 
 export function Calculator() {
-  const [lastCharacterOfExpression, setLastCharacterOfExpression] = useState<Keys>('C');
   const [expression, setExpression] = useState<Keys[]>([]);
   const [result, setResult] = useState<string>('');
   const [parenthesesAreClosed, setParenthesesAreClosed] = useState(true);
   const [isSolvable, setIsSolvable] = useState(false);
+  var lastCharacterOfExpression: Keys;
 
   const toast = useToast();
 
@@ -44,7 +44,7 @@ export function Calculator() {
   };
 
   const handleClear = () => {
-    setLastCharacterOfExpression('C');
+    lastCharacterOfExpression = 'C';
     setExpression([]);
     setResult('');
     setParenthesesAreClosed(true);
@@ -52,16 +52,14 @@ export function Calculator() {
   };
 
   const handleEraseToTheLeft = () => {
-    if (expression.length !== 0) {
-      expression.length > 2 && setLastCharacterOfExpression(expression[expression.length - 2])
+    // não há nada para apagar
+    if (expression.length === 0) return
 
-      if (expression.length === 1) setLastCharacterOfExpression('C')
+    // define o último caractere da expressão 
+    lastCharacterOfExpression = expression.length === 1 ? 'C' : expression[expression.length - 2]
 
-
-      expression[expression.length - 1] === ')' && setParenthesesAreClosed(false)
-      typeof expression[expression.length - 2] === 'number' && expression[expression.length - 1] === ')' ? setIsSolvable(true) : setIsSolvable(false)
-      setExpression(expression.slice(0, -1));
-    }
+    // remove o útimo item do array
+    setExpression(expression.slice(0, -1));
   }
 
   const handleParentheses = () => {
@@ -75,7 +73,7 @@ export function Calculator() {
       }
 
       setIsSolvable(true)
-      setLastCharacterOfExpression(')')
+      lastCharacterOfExpression = ')'
       const { countCloseParentheses, countOpenParentheses } = countParentheses();
       countOpenParentheses - countCloseParentheses === 1 && setParenthesesAreClosed(true)
 
@@ -86,13 +84,13 @@ export function Calculator() {
     if (lastCharacterOfExpression === ')' || typeof lastCharacterOfExpression === 'number') {
       setIsSolvable(false)
 
-      setLastCharacterOfExpression('(')
+      lastCharacterOfExpression = '('
 
       return setExpression(expression.concat('*', '('))
     }
 
     setIsSolvable(false)
-    setLastCharacterOfExpression('(')
+    lastCharacterOfExpression = '('
     setExpression(expression.concat('('))
   }
 
@@ -119,7 +117,7 @@ export function Calculator() {
     })
 
     arrayResult[0] === 0 ? setExpression([]) : setExpression(arrayResult);
-    setLastCharacterOfExpression('C');
+    lastCharacterOfExpression = 'C';
     setResult('');
     setParenthesesAreClosed(true);
     setIsSolvable(false);
@@ -131,9 +129,12 @@ export function Calculator() {
 
   const handleNumber = (number: number) => {
     if (lastCharacterOfExpression === ')') {
+      lastCharacterOfExpression = number
       return setExpression(expression.concat('*', number))
     }
-    setIsSolvable(true)
+    
+    lastCharacterOfExpression = number
+    setExpression(expression.concat(number))
   }
 
   const handleOperation = (operation: Operation) => {
