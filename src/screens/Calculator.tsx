@@ -33,12 +33,13 @@ export function Calculator() {
     };
   }
 
-  const verifyItIsSolvable = () => {  
-    countParentheses();
-    
-    if (!parenthesesAreClosed ||
-      typeof lastCharacterOfExpression !== 'number'
-    ) {    
+  const verifyItIsSolvable = () => {
+    const { countCloseParentheses, countOpenParentheses } = countParentheses()
+    const unclosedParentheses = countOpenParentheses - countCloseParentheses;
+
+    if (unclosedParentheses !== 0 ||
+      (typeof lastCharacterOfExpression !== 'number' && lastCharacterOfExpression !== ')')
+    ) {
       setResult('')
       return setIsSolvable(false)
     }
@@ -62,27 +63,28 @@ export function Calculator() {
     // define o último caractere da expressão 
     setLastCharacterOfExpression(expression.length === 1 ? 'C' : expression[expression.length - 2])
 
+    if (lastCharacterOfExpression === ')') setParenthesesAreClosed(false)
+
     // remove o útimo item do array
     setExpression(expression.slice(0, -1));
   }
 
   const handleParentheses = () => {
-    if (!parenthesesAreClosed && (lastCharacterOfExpression !== '(') && (lastCharacterOfExpression !== 'C')) {
-      if (lastCharacterOfExpression !== ')' && typeof lastCharacterOfExpression !== 'number') {
-        return toast.show({
-          title: 'Expressão inválida',
-          placement: 'top',
-          bgColor: 'red.500'
-        })
-      }
+    if (!parenthesesAreClosed &&
+      (typeof lastCharacterOfExpression === 'number' || lastCharacterOfExpression === ')')
+    ) {
+      setIsSolvable(false)
 
-      setIsSolvable(true)
       setLastCharacterOfExpression(')')
-      const { countCloseParentheses, countOpenParentheses } = countParentheses();
-      countOpenParentheses - countCloseParentheses === 1 && setParenthesesAreClosed(true)
+      return setExpression(expression.concat(')'))
+    }
 
-      setExpression(expression.concat(')'))
-      return
+    if (lastCharacterOfExpression === '.') {
+      setIsSolvable(false)
+
+      setLastCharacterOfExpression('(')
+
+      return setExpression(expression.concat(0, '*', '('))
     }
 
     if (lastCharacterOfExpression === ')' || typeof lastCharacterOfExpression === 'number') {
@@ -152,7 +154,7 @@ export function Calculator() {
       copyExpression.pop()
       return setExpression(copyExpression.concat(operation))
     }
-    
+
     setLastCharacterOfExpression(operation)
     setExpression(copyExpression.concat(operation))
   }
