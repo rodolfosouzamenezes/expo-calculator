@@ -14,6 +14,21 @@ export function Calculator() {
 
   const toast = useToast();
 
+  const showToast = (
+    message: string,
+    type: 'error' | 'info' = 'info',
+    durationInMilliseconds: number = 1200
+  ) => {
+    toast.show({
+      title: message,
+      placement: type === 'error' ? 'top' : 'bottom',
+      bgColor: type === 'error' ? 'red.500' : 'muted.700',
+      duration: durationInMilliseconds,
+      minW: '3/6',
+      alignItems: 'center'
+    })
+  }
+
   const countParentheses = () => {
     if (expression) {
       let countOpenParentheses = expression.join('').split('(').length - 1;
@@ -103,18 +118,12 @@ export function Calculator() {
   const handleEqual = () => {
     if (!isSolvable) {
       if (!parenthesesAreClosed) {
-        return toast.show({
-          title: 'Expressão inválida, há um parêntese aberto',
-          placement: 'top',
-          bgColor: 'red.500'
-        })
+        showToast('Expressão inválida, há um parêntese aberto', 'error')
+        return
       }
 
-      return toast.show({
-        title: 'Expressão inválida',
-        placement: 'top',
-        bgColor: 'red.500'
-      })
+      showToast('Expressão inválida', 'error')
+      return
     }
 
     let stringExpressionResult = String(eval(expression.join('')));
@@ -186,7 +195,6 @@ export function Calculator() {
     }
   }
 
-
   useEffect(() => {
     verifyItIsSolvable()
     console.log(
@@ -200,7 +208,7 @@ export function Calculator() {
   return (
     <VStack flex={1} bg='background.900' alignItems='center' safeArea>
       <Display expression={expression} result={result} />
-      <Keyboard handleButtonPress={handleButtonPress} />
+      <Keyboard onButtonPress={handleButtonPress} onButtonLongPress={showToast} />
     </VStack>
   )
 }
