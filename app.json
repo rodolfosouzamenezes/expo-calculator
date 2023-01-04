@@ -26,10 +26,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.rodolfosouzaofc.expocalculator"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c46c9569-1b03-4359-a092-d988a9adc969"
+      }
     }
   }
 }
