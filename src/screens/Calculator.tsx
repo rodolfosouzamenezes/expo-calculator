@@ -131,8 +131,8 @@ export function Calculator() {
       return character === '.' ? '.' : Number(character);
     })
 
-    arrayResult[0] === 0 ? setExpression([]) : setExpression(arrayResult);
-    setLastCharacterOfExpression('C')
+    arrayResult[0] === 0 ? setExpression([0]) : setExpression(arrayResult);
+    setLastCharacterOfExpression(arrayResult[arrayResult.length-1])
     setResult('');
     setParenthesesAreClosed(true);
     setIsSolvable(false);
