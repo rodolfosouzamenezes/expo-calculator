@@ -8,7 +8,9 @@ export function Calculator() {
   const [result, setResult] = useState<string>('');
   const [parenthesesAreClosed, setParenthesesAreClosed] = useState(true);
   const [isSolvable, setIsSolvable] = useState(false);
-  var lastCharacterOfExpression: Keys;
+  const [lastCharacterOfExpression, setLastCharacterOfExpression] = useState<Keys>('C');
+
+  console.log('updated component')
 
   const toast = useToast();
 
@@ -31,20 +33,23 @@ export function Calculator() {
     };
   }
 
-  const verifyItIsSolvable = () => {
+  const verifyItIsSolvable = () => {    
     countParentheses();
-
+    
+    console.log(lastCharacterOfExpression, typeof lastCharacterOfExpression !== 'number');
     if (!parenthesesAreClosed ||
-      typeof lastCharacterOfExpression !== 'number' &&
-      KeysThatAreNotNumbersSet.has(lastCharacterOfExpression)
-    ) {
+      typeof lastCharacterOfExpression !== 'number'
+    ) {    
+      setResult('')
       return setIsSolvable(false)
     }
+
+    setResult(eval(expression.join('')))
     return setIsSolvable(true)
   };
 
   const handleClear = () => {
-    lastCharacterOfExpression = 'C';
+    setLastCharacterOfExpression('C');
     setExpression([]);
     setResult('');
     setParenthesesAreClosed(true);
@@ -56,7 +61,7 @@ export function Calculator() {
     if (expression.length === 0) return
 
     // define o último caractere da expressão 
-    lastCharacterOfExpression = expression.length === 1 ? 'C' : expression[expression.length - 2]
+    setLastCharacterOfExpression(expression.length === 1 ? 'C' : expression[expression.length - 2])
 
     // remove o útimo item do array
     setExpression(expression.slice(0, -1));
@@ -73,7 +78,7 @@ export function Calculator() {
       }
 
       setIsSolvable(true)
-      lastCharacterOfExpression = ')'
+      setLastCharacterOfExpression(')')
       const { countCloseParentheses, countOpenParentheses } = countParentheses();
       countOpenParentheses - countCloseParentheses === 1 && setParenthesesAreClosed(true)
 
@@ -84,13 +89,13 @@ export function Calculator() {
     if (lastCharacterOfExpression === ')' || typeof lastCharacterOfExpression === 'number') {
       setIsSolvable(false)
 
-      lastCharacterOfExpression = '('
+      setLastCharacterOfExpression('(')
 
       return setExpression(expression.concat('*', '('))
     }
 
     setIsSolvable(false)
-    lastCharacterOfExpression = '('
+    setLastCharacterOfExpression('(')
     setExpression(expression.concat('('))
   }
 
@@ -117,7 +122,7 @@ export function Calculator() {
     })
 
     arrayResult[0] === 0 ? setExpression([]) : setExpression(arrayResult);
-    lastCharacterOfExpression = 'C';
+    setLastCharacterOfExpression('C')
     setResult('');
     setParenthesesAreClosed(true);
     setIsSolvable(false);
@@ -129,19 +134,27 @@ export function Calculator() {
 
   const handleNumber = (number: number) => {
     if (lastCharacterOfExpression === ')') {
-      lastCharacterOfExpression = number
+      setLastCharacterOfExpression(number)
       return setExpression(expression.concat('*', number))
     }
-    
-    lastCharacterOfExpression = number
+
+    setLastCharacterOfExpression(number)
     setExpression(expression.concat(number))
   }
 
   const handleOperation = (operation: Operation) => {
-
+    let copyExpression = [...expression];
+    if (typeof lastCharacterOfExpression !== 'number' && OperationsSet.has(lastCharacterOfExpression)) {
+      setLastCharacterOfExpression(operation)
+      copyExpression.pop()
+      return setExpression(copyExpression.concat(operation))
+    }
+    
+    setLastCharacterOfExpression(operation)
+    setExpression(copyExpression.concat(operation))
   }
 
-  const handleButtonPress = (value: Keys) => {
+  const handleButtonPress = async (value: Keys) => {
     switch (value) {
       case "C":
         handleClear();
@@ -166,17 +179,18 @@ export function Calculator() {
         if (typeof value !== 'number' && OperationsSet.has(value)) handleOperation(value)
         break;
     }
-
-    console.log('Last Character of Expression:', lastCharacterOfExpression);
   }
 
 
   useEffect(() => {
     verifyItIsSolvable()
-    console.log('Parentheses:', parenthesesAreClosed, 'Is Solvable:', isSolvable);
-
-    setResult(isSolvable ? eval(expression.join('')) : '')
-  })
+    console.log(
+      '\x1b[32m%s',
+      'Last Character of Expression:', lastCharacterOfExpression,
+      '| Parentheses:', parenthesesAreClosed,
+      '| Is Solvable:', isSolvable
+    );
+  }, [expression])
 
   return (
     <VStack flex={1} bg='background.900' alignItems='center' safeArea>
