@@ -33,10 +33,9 @@ export function Calculator() {
     };
   }
 
-  const verifyItIsSolvable = () => {    
+  const verifyItIsSolvable = () => {  
     countParentheses();
     
-    console.log(lastCharacterOfExpression, typeof lastCharacterOfExpression !== 'number');
     if (!parenthesesAreClosed ||
       typeof lastCharacterOfExpression !== 'number'
     ) {    
@@ -129,7 +128,11 @@ export function Calculator() {
   }
 
   const handlePoint = () => {
+    setLastCharacterOfExpression('.')
+    if (lastCharacterOfExpression === ')') return setExpression(expression.concat('*', 0, '.'))
+    if (typeof lastCharacterOfExpression !== 'number') return setExpression(expression.concat(0, '.'))
 
+    setExpression(expression.concat('.'))
   }
 
   const handleNumber = (number: number) => {
