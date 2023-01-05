@@ -12,7 +12,7 @@ export interface IKeyboardProps {
 
 export function Keyboard({ onButtonPress, onButtonLongPress }: IKeyboardProps) {
   return (
-    <VStack pt={4} borderTopColor='background.800' borderTopWidth={2}>
+    <VStack pt={4} borderTopColor='background.800' borderTopWidth={2} position='absolute' bottom={0}>
       <HStack justifyContent='space-evenly' w='full' mb={4}>
         <Button type='clear' text='C' onPress={() => onButtonPress('C')} onLongPress={() => onButtonLongPress('Apagar Tudo')} />
         <Button type='operator' text='%' onPress={() => onButtonPress('%')} onLongPress={() => onButtonLongPress('Resto da Divisão')} />
