@@ -5,8 +5,8 @@ const theme = extendTheme({
   ...globalTheme,
   colors: {
     primary: {
-      800: '#56a405',
-      900: '#427e04',
+      800: '#0fa958',
+      900: '#0a753d',
     },
     background: {
       600: '#444444',
