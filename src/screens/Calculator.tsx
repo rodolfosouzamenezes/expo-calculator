@@ -51,8 +51,10 @@ export function Calculator() {
   const verifyItIsSolvable = () => {
     const { countCloseParentheses, countOpenParentheses } = countParentheses()
     const unclosedParentheses = countOpenParentheses - countCloseParentheses;
+    const isExpression = expression.find(value => typeof value !== 'number' && OperationsSet.has(value))
 
     if (unclosedParentheses !== 0 ||
+      !isExpression ||
       (typeof lastCharacterOfExpression !== 'number' && lastCharacterOfExpression !== ')')
     ) {
       setResult('')
