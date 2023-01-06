@@ -206,7 +206,7 @@ export function Calculator() {
   }, [expression])
 
   return (
-    <VStack flex={1} bg='background.900' alignItems='center' safeArea>
+    <VStack flex={1} bg='background.900' justifyContent='space-between' safeArea>
       <Display expression={expression} result={result} />
       <Keyboard onButtonPress={handleButtonPress} onButtonLongPress={showToast} />
     </VStack>

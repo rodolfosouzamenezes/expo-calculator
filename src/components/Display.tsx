@@ -19,7 +19,7 @@ export function Display({ expression, result }: IDisplayProps) {
   const formattedResult = String(result).replace(/\./g, ",");
   const formattedExpression = formatExpression(expression);
   return (
-    <Box flex={1} w='full' padding='12' alignItems='flex-end' justifyContent='space-between'>
+    <Box flex={1} w='full' h='10' padding='12' alignItems='flex-end' justifyContent='space-between'>
       <Text color='text.900' fontSize={38}>{formattedExpression || '0'}</Text>
       <Text color='text.800' fontSize={26}>{typeof result === 'number' ? formattedResult : ''}</Text>
     </Box>
