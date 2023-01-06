@@ -139,6 +139,8 @@ export function Calculator() {
       return Number(character);
     })
 
+    if (arrayResult[0] === '-') arrayResult.unshift('(')
+
     arrayResult[0] === 0 ? setExpression([0]) : setExpression(arrayResult);
     setLastCharacterOfExpression(arrayResult[arrayResult.length - 1])
     setResult('');
