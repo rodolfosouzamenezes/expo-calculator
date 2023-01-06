@@ -25,7 +25,11 @@ export function Calculator() {
       bgColor: type === 'error' ? 'red.500' : 'muted.700',
       duration: durationInMilliseconds,
       minW: '3/6',
-      alignItems: 'center'
+      maxW: '95%',
+      alignItems: 'center',
+      _title: {
+        textAlign: 'center',
+      }
     })
   }
 
@@ -136,7 +140,7 @@ export function Calculator() {
     })
 
     arrayResult[0] === 0 ? setExpression([0]) : setExpression(arrayResult);
-    setLastCharacterOfExpression(arrayResult[arrayResult.length-1])
+    setLastCharacterOfExpression(arrayResult[arrayResult.length - 1])
     setResult('');
     setParenthesesAreClosed(true);
     setIsSolvable(false);
@@ -162,6 +166,25 @@ export function Calculator() {
 
   const handleOperation = (operation: Operation) => {
     let copyExpression = [...expression];
+
+    if (expression.length < 1 && (
+      operation === '-' ||
+      operation === '+')
+    ) {
+      setExpression(copyExpression.concat('(', operation))
+      setLastCharacterOfExpression(operation)
+      return
+    }
+
+    if ((lastCharacterOfExpression === '(' ||
+      lastCharacterOfExpression === 'C') && (
+      operation !== '-' &&
+      operation !== '+'
+      )
+    ) return showToast('Formato Inválido', 'error')
+
+    if (expression.length < 1) return showToast('Formato Inválido', 'error')
+
     if (typeof lastCharacterOfExpression !== 'number' && OperationsSet.has(lastCharacterOfExpression)) {
       setLastCharacterOfExpression(operation)
       copyExpression.pop()
@@ -173,6 +196,12 @@ export function Calculator() {
   }
 
   const handleButtonPress = async (value: Keys) => {
+    if (expression.length >= 15 &&
+      value !== 'C' &&
+      value !== '=' &&
+      value !== '⌫'
+    ) return showToast(`Máximo de 15 caracteres!\n Apague ou finalize a expressão`, 'error')
+
     switch (value) {
       case "C":
         handleClear();
