@@ -130,7 +130,9 @@ export function Calculator() {
 
     let stringExpressionResult = String(eval(expression.join('')));
     let arrayResult: Keys[] = stringExpressionResult.split('').map(character => {
-      return character === '.' ? '.' : Number(character);
+      if (character === '-' || character === '.') return character;
+
+      return Number(character);
     })
 
     arrayResult[0] === 0 ? setExpression([0]) : setExpression(arrayResult);
