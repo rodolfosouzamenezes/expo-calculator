@@ -1,7 +1,8 @@
 import { useToast, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { Display } from "../components/Display";
-import { Keyboard, Keys, KeysThatAreNotNumbersSet, Operation, OperationsSet } from "../components/Keyboard";
+import { Keyboard, Keys, Operation, OperationsSet } from "../components/Keyboard";
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 export function Calculator() {
   const [expression, setExpression] = useState<Keys[]>([]);
@@ -180,8 +181,8 @@ export function Calculator() {
 
     if ((lastCharacterOfExpression === '(' ||
       lastCharacterOfExpression === 'C') && (
-      operation !== '-' &&
-      operation !== '+'
+        operation !== '-' &&
+        operation !== '+'
       )
     ) return showToast('Formato Inválido', 'error')
 
@@ -242,6 +243,14 @@ export function Calculator() {
 
   return (
     <VStack flex={1} bg='background.900' justifyContent='space-between' safeArea>
+      <BannerAd
+        size={BannerAdSize.FULL_BANNER}
+        unitId={TestIds.BANNER}
+        onAdFailedToLoad={error => console.log(error)}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      />
       <Display expression={expression} result={result} />
       <Keyboard onButtonPress={handleButtonPress} onButtonLongPress={showToast} />
     </VStack>
