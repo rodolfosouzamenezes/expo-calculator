@@ -15,7 +15,7 @@ export function Keyboard({ onButtonPress, onButtonLongPress }: IKeyboardProps) {
     <VStack p={4} borderTopColor='background.800' borderTopWidth={2}>
       <HStack justifyContent='space-evenly' w='full'>
         <Button type='clear' text='C' onPress={() => onButtonPress('C')} onLongPress={() => onButtonLongPress('Apagar Tudo')} />
-        <Button type='operator' text='%' onPress={() => onButtonPress('%')} onLongPress={() => onButtonLongPress('Resto da Divisão')} />
+        <Button type='operator' text='%' onPress={() => onButtonPress('%')} onLongPress={() => onButtonLongPress('Porcentagem')} />
         <Button type='operator' text='÷' onPress={() => onButtonPress('/')} onLongPress={() => onButtonLongPress('Divisão')} />
         <Button type='operator' text='x' onPress={() => onButtonPress('*')} onLongPress={() => onButtonLongPress('Multiplicação')} />
       </HStack>

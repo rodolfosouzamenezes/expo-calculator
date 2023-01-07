@@ -66,7 +66,12 @@ export function Calculator() {
       return setIsSolvable(false)
     }
 
-    setResult(eval(expression.join('')))
+    const formattedExpression = expression.reduce((expressionCopy, currentValue) => {
+      currentValue === '%' ? expressionCopy.push('/', 1, 0, 0, '*') : expressionCopy.push(currentValue)
+      return expressionCopy;
+    }, [] as Keys[])
+
+    setResult(eval(formattedExpression.join('')))
     return setIsSolvable(true)
   };
 
@@ -237,7 +242,8 @@ export function Calculator() {
       '\x1b[32m%s',
       'Last Character of Expression:', lastCharacterOfExpression,
       '| Parentheses:', parenthesesAreClosed,
-      '| Is Solvable:', isSolvable
+      '| Is Solvable:', isSolvable,
+      '\x1b[0m'
     );
   }, [expression])
 
