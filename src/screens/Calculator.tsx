@@ -194,6 +194,11 @@ export function Calculator() {
     if (expression.length < 1) return showToast('Formato Inválido', 'error')
 
     if (typeof lastCharacterOfExpression !== 'number' && OperationsSet.has(lastCharacterOfExpression)) {
+      if (expression[expression.length-2] === '(' &&
+        operation !== '-' &&
+        operation !== '+'
+      ) return showToast('Formato inválido', 'error')
+
       setLastCharacterOfExpression(operation)
       copyExpression.pop()
       return setExpression(copyExpression.concat(operation))
@@ -237,26 +242,29 @@ export function Calculator() {
   }
 
   useEffect(() => {
+    let redConsoleColor = '\x1b[32m%s'
+    let resetConsoleColor = '\x1b[0m'
+
     verifyItIsSolvable()
     console.log(
-      '\x1b[32m%s',
+      redConsoleColor,
       'Last Character of Expression:', lastCharacterOfExpression,
       '| Parentheses:', parenthesesAreClosed,
       '| Is Solvable:', isSolvable,
-      '\x1b[0m'
+      resetConsoleColor
     );
   }, [expression])
 
   return (
-    <VStack flex={1} bg='background.900' justifyContent='space-between' safeArea>
-      <BannerAd
+    <VStack flex={1} bg='background.900' safeArea justifyContent='flex-end'>
+      {/* <BannerAd
         size={BannerAdSize.FULL_BANNER}
         unitId={TestIds.BANNER}
         onAdFailedToLoad={error => console.log(error)}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
         }}
-      />
+      /> */}
       <Display expression={expression} result={result} />
       <Keyboard onButtonPress={handleButtonPress} onButtonLongPress={showToast} />
     </VStack>
