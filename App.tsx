@@ -10,7 +10,7 @@ export default function App() {
   return (
     <NativeBaseProvider theme={theme}>
       <StatusBar
-        barStyle='light-content'
+        barStyle={`${deviceTheme === 'light' ? 'dark' : 'light'}-content`}
         backgroundColor='transparent'
         translucent
       />
