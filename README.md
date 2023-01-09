@@ -1,7 +1,7 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&color=15f57f&height=300&section=header&text=Calculator&fontSize=90&fontColor=fff&animation=fadeIn&fontAlignY=38&fontAlign=62&desc=Mathematical%20Calculation%20Application&descAlignY=51&descAlign=67)
 
 <p align="center">
-  <a href="https://github.com/rodolfosouzamenezes/expo-calculator/docs/README-pt-br.md">
+  <a href="https://github.com/rodolfosouzamenezes/expo-calculator/blob/master/docs/README-pt-br.md">
     <img alt="README em pt-br" src="https://img.shields.io/badge/README%20em%20Português-🇧🇷-%098307">
   </a>
   <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/rodolfosouzamenezes/expo-calculator?color=%0B962B">
